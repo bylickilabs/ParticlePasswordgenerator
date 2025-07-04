@@ -1,2 +1,23 @@
-# ParticlePasswordgenerator
-Ein moderner Passwort Generator mit Neon-Design, animiertem Partikel-Hintergrund, individuellen Einstellungen und Logo-Upload. Sicher, responsiv und intuitiv bedienbar – ideal für alle, die schnell und komfortabel starke Passwörter erstellen möchten.
+# Passwort Generator – Neon Edition
+
+Ein moderner Passwort Generator mit exklusivem Neon-Design, animierten Partikeln und individueller Logo-Integration. Erstelle schnell und komfortabel sichere Passwörter mit wählbarer Länge und flexiblen Zeichensätzen (Groß-/Kleinbuchstaben, Zahlen, Sonderzeichen).  
+Features wie responsives Design, einfacher Logo-Upload und direkter Kopieren-Button sorgen für eine intuitive und professionelle Nutzererfahrung.
+
+---
+
+**Highlights:**
+- Neon-Look & animierter Partikel-Hintergrund
+- Individuelle Passwortlänge und Zeichenauswahl
+- Logo-Upload und Größenwahl
+- GitHub-Link & Kopieren-Button
+- Komplett responsiv & ohne externe Abhängigkeiten
+
+---
+
+**Nutzung:**  
+Datei öffnen und direkt im Browser verwenden – keine Installation erforderlich.
+
+---
+
+&copy; 2025 Thorsten Bylicki
+[LICENSE](LICENSE)
