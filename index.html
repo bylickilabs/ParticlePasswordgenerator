@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Passwort Generator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Neon Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
+    <style>
+        html, body { height: 100%; }
+        body {
+            background: #101019;
+            margin: 0;
+            min-height: 100vh;
+            font-family: 'Orbitron', Arial, sans-serif;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #particles-js {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .logo-panel {
+            position: fixed;
+            top: 28px; left: 32px;
+            z-index: 110;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+        }
+        .logo-fix {
+            width: 100px;
+            height: 100px;
+            border-radius: 18px;
+            background: linear-gradient(135deg, #14f1ff 0%, #d414ff 100%);
+            box-shadow: 0 0 16px 3px #14f1ffcc, 0 0 40px 12px #d414ff44;
+            border: 4px solid #fff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            transition: width 0.2s, height 0.2s;
+        }
+        .logo-fix:hover, .logo-fix:focus-visible {
+            box-shadow: 0 0 40px 12px #14f1ffbb, 0 0 80px 20px #d414ffbb, 0 0 0 7px #fffcc9;
+            transform: scale(1.14);
+        }
+        .logo-fix:active { transform: scale(0.93); }
+        .logo-fix img {
+            width: 92%;
+            height: 92%;
+            object-fit: cover;
+            border-radius: 14px;
+            background: #181a21;
+            border: none;
+        }
+        #logo-upload { display: none; }
+        .logo-size-controls {
+            display: flex;
+            flex-direction: row;
+            gap: 7px;
+            width: 100%;
+        }
+        .logo-size-controls button {
+            background: linear-gradient(90deg, #14f1ff 0%, #d414ff 100%);
+            color: #fff;
+            border: none;
+            padding: 4px 14px;
+            border-radius: 10px;
+            font-family: 'Orbitron', Arial, sans-serif;
+            font-size: 0.92rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 0 6px #14f1ff99, 0 0 12px #d414ff55;
+            transition: transform 0.10s, box-shadow 0.18s, font-size 0.15s, padding 0.16s;
+            min-width: 0;
+            min-height: 0;
+        }
+        .logo-size-controls button:hover { transform: scale(1.07);}
+        .github-fix {
+            position: fixed;
+            top: 28px; right: 32px; z-index: 100;
+            width: 58px; height: 58px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #14f1ff 0%, #d414ff 100%);
+            box-shadow: 0 0 16px 3px #14f1ffcc, 0 0 40px 12px #d414ff44;
+            border: 3px solid #fff;
+            cursor: pointer;
+            transition: box-shadow 0.21s, transform 0.18s;
+        }
+        .github-fix:hover, .github-fix:focus-visible {
+            box-shadow: 0 0 40px 12px #14f1ffbb, 0 0 80px 20px #d414ffbb, 0 0 0 7px #fffcc9;
+            transform: scale(1.14);
+        }
+        .github-fix:active { transform: scale(0.93); }
+        .github-fix svg {
+            width: 32px; height: 32px;
+            fill: #fff;
+            filter: drop-shadow(0 0 7px #14f1ffcc);
+        }
+        @media (max-width: 700px) {
+            .logo-panel { top: 6px; left: 6px; }
+            .logo-fix { width: 52px; height: 52px; }
+            .logo-size-controls button { font-size: 0.79rem; padding: 2px 7px; }
+            .github-fix { right: 8px; width: 38px; height: 38px;}
+            .github-fix svg { width: 19px; height: 19px; }
+        }
+        .container {
+            background: rgba(25, 25, 35, 0.97);
+            padding: 2.0rem 2.5rem 2.5rem 2.5rem;
+            border-radius: 1.5rem;
+            box-shadow: 0 0 40px 5px #14f1ff66;
+            position: relative;
+            z-index: 2;
+            min-width: 370px;
+            max-width: 500px;
+            width: fit-content;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+        }
+        .neon-border {
+            border: 2.5px solid #14f1ff;
+            box-shadow: 0 0 16px #0ff, 0 0 40px #14f1ff99 inset;
+        }
+        h1.neon-text {
+            color: #14f1ff;
+            text-shadow:
+              0 0 5px #0ff,
+              0 0 10px #14f1ff,
+              0 0 25px #14f1ff,
+              0 0 40px #0ff;
+            text-align: center;
+            font-size: 2.07rem;
+            margin-bottom: 1.3rem;
+            letter-spacing: 0.09em;
+            white-space: nowrap;
+        }
+        .output-row {
+            display: flex;
+            flex-direction: row;
+            gap: 1.2rem;
+            align-items: stretch;
+            margin-bottom: 1.15rem;
+            width: 100%;
+        }
+        .neon-input {
+            flex: 1 1 0;
+            min-width: 0;
+            background: #222;
+            border: none;
+            border-radius: 0.7rem;
+            color: #14f1ff;
+            font-size: 1.13rem;
+            padding: 0.72rem 0.95rem;
+            box-shadow: 0 0 12px #14f1ff66 inset;
+            outline: none;
+            transition: box-shadow 0.22s;
+            font-family: inherit;
+        }
+        .neon-input:focus {
+            box-shadow: 0 0 18px #0ff88b, 0 0 12px #14f1ffcc inset;
+        }
+        .neon-btn {
+            background: linear-gradient(90deg, #14f1ff 0%, #d414ff 100%);
+            color: #fff;
+            border: none;
+            min-width: 132px;
+            min-height: 50px;
+            padding: 0.88rem 1.6rem;
+            border-radius: 0.8rem;
+            box-shadow: 0 0 8px #14f1ffcc, 0 0 18px #d414ff44;
+            font-size: 1.14rem;
+            font-family: inherit;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+            cursor: pointer;
+            transition: transform 0.16s, box-shadow 0.21s;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .neon-btn:hover {
+            transform: scale(1.07);
+            box-shadow: 0 0 18px #14f1ffcc, 0 0 25px #d414ff;
+        }
+        .copy-text, .copied-text {
+            position: absolute;
+            left: 50%; top: 50%;
+            transform: translate(-50%,-50%);
+            transition: opacity 0.25s;
+            pointer-events: none;
+            font-size: 1.08rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            text-shadow: 0 0 6px #14f1ff99, 0 0 8px #d414ff55;
+        }
+        .copied-text { opacity: 0; }
+        .neon-btn.copied .copy-text { opacity: 0; }
+        .neon-btn.copied .copied-text { opacity: 1; }
+        .neon-label {
+            color: #14f1ff;
+            text-shadow: 0 0 8px #14f1ff88;
+            font-size: 1rem;
+        }
+        #length {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 16px;
+            background: linear-gradient(90deg, #14f1ff 0%, #d414ff 100%);
+            border-radius: 8px;
+            outline: none;
+            box-shadow: 0 0 16px 2px #14f1ff88, 0 0 32px 3px #d414ff44;
+            transition: background 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            margin: 0.7rem 0 1.1rem;
+            accent-color: #14f1ff;
+            position: relative;
+        }
+        #length:focus {
+            box-shadow: 0 0 22px 6px #14f1ffcc, 0 0 38px 12px #d414ff55;
+            background: linear-gradient(90deg, #d414ff 0%, #14f1ff 100%);
+        }
+        #length::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            margin-top: -5px;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #fff 0 30%, #14f1ff 65%, #d414ff 100%);
+            box-shadow: 0 0 16px 6px #14f1ff99, 0 0 30px 9px #d414ff77, 0 0 0 3px #222 inset;
+            border: 2.5px solid #fff;
+            cursor: pointer;
+            transition: box-shadow 0.22s, background 0.33s;
+        }
+        #length:focus::-webkit-slider-thumb {
+            background: radial-gradient(circle at 70% 70%, #fff 0 18%, #d414ff 55%, #14f1ff 100%);
+            box-shadow: 0 0 24px 10px #d414ffbb, 0 0 50px 18px #14f1ff66;
+        }
+        #length::-webkit-slider-runnable-track {
+            height: 16px;
+            border-radius: 8px;
+        }
+        #length::-moz-range-thumb {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #fff 0 30%, #14f1ff 65%, #d414ff 100%);
+            box-shadow: 0 0 16px 6px #14f1ff99, 0 0 30px 9px #d414ff77, 0 0 0 3px #222 inset;
+            border: 2.5px solid #fff;
+            cursor: pointer;
+            transition: box-shadow 0.22s, background 0.33s;
+        }
+        #length:focus::-moz-range-thumb {
+            background: radial-gradient(circle at 70% 70%, #fff 0 18%, #d414ff 55%, #14f1ff 100%);
+            box-shadow: 0 0 24px 10px #d414ffbb, 0 0 50px 18px #14f1ff66;
+        }
+        #length::-moz-range-track {
+            height: 16px;
+            border-radius: 8px;
+            background: linear-gradient(90deg, #14f1ff 0%, #d414ff 100%);
+        }
+        #length::-ms-thumb {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #fff 0 30%, #14f1ff 65%, #d414ff 100%);
+            box-shadow: 0 0 16px 6px #14f1ff99, 0 0 30px 9px #d414ff77, 0 0 0 3px #222 inset;
+            border: 2.5px solid #fff;
+            cursor: pointer;
+            transition: box-shadow 0.22s, background 0.33s;
+        }
+        #length:focus::-ms-thumb {
+            background: radial-gradient(circle at 70% 70%, #fff 0 18%, #d414ff 55%, #14f1ff 100%);
+            box-shadow: 0 0 24px 10px #d414ffbb, 0 0 50px 18px #14f1ff66;
+        }
+        #length::-ms-fill-lower {
+            background: #14f1ff;
+            border-radius: 8px;
+        }
+        #length::-ms-fill-upper {
+            background: #d414ff;
+            border-radius: 8px;
+        }
+        #length:focus { outline: none; }
+        #length::-ms-tooltip { display: none; }
+        input[type=range]:focus { outline: none; }
+        .options {
+            margin-bottom: 2.1rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.7rem 1.3rem;
+        }
+        .options label {
+            color: #00ffb2;
+            font-weight: 700;
+            margin-right: 1.2rem;
+            font-size: 1.09rem;
+            text-shadow: 0 0 10px #00ffb255, 0 0 4px #d414ff88;
+            cursor: pointer;
+            user-select: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5em;
+        }
+        .options input[type="checkbox"] {
+            accent-color: #fff;
+            width: 18px;
+            height: 18px;
+            border-radius: 4px;
+            margin-right: 4px;
+        }
+        .generate-btn {
+            width: 100%;
+            margin-top: 1.5rem;
+            font-size: 1.18rem;
+            font-weight: 900;
+            letter-spacing: 0.09em;
+            padding: 1.13rem 0;
+            border-radius: 0.8rem;
+            box-shadow: 0 0 32px 4px #14f1ff55, 0 0 60px 9px #d414ff22;
+            background: linear-gradient(90deg, #14f1ff 0%, #d414ff 100%);
+            transition: box-shadow 0.22s, background 0.33s;
+            min-width: unset;
+            min-height: 60px;
+            display: block;
+            position: relative;
+            top: 14px;
+        }
+        .generate-btn:hover {
+            background: linear-gradient(90deg, #d414ff 0%, #14f1ff 100%);
+            box-shadow: 0 0 40px 9px #14f1ff, 0 0 90px 18px #d414ff88;
+        }
+        .footer {
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100vw;
+            background: rgba(18, 18, 30, 0.96);
+            border-top: 2.5px solid #14f1ff;
+            box-shadow: 0 0 20px #14f1ff66, 0 0 60px #d414ff33;
+            color: #14f1ff;
+            font-family: 'Orbitron', Arial, sans-serif;
+            font-size: 1.08rem;
+            text-align: center;
+            padding: 0.8rem 0;
+            z-index: 100;
+            letter-spacing: 0.07em;
+            text-shadow: 0 0 12px #14f1ff99;
+            user-select: none;
+        }
+        @media (max-width: 600px) {
+            .container { padding: 1.2rem 0.6rem 1.9rem 0.6rem; min-width: unset; width: 99vw; max-width: 99vw; }
+            .output-row { flex-direction: column; gap: 0.6rem; }
+            .neon-btn { min-width: 99%; }
+            h1.neon-text { font-size: 1.29rem; }
+            .footer { font-size: 0.97rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Logo + Buttons Panel -->
+    <div class="logo-panel" id="logo-panel">
+        <div class="logo-fix" id="logo-container" title="Klicken, um ein anderes Bild zu wählen">
+            <img id="logo-img" src="assets/logo.png" alt="Logo" />
+            <input type="file" id="logo-upload" accept="image/*" style="display:none;" />
+        </div>
+        <div class="logo-size-controls" id="logo-size-controls">
+            <button data-w="60" data-h="60">Klein</button>
+            <button data-w="100" data-h="100">Standard</button>
+            <button data-w="160" data-h="160">Groß</button>
+        </div>
+    </div>
+    <a class="github-fix" href="https://github.com/bylickilabs" target="_blank" title="Zu meinem GitHub-Profil" aria-label="GitHub">
+        <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+            <path d="M12 .297c-6.6 0-12 5.4-12 12 0 5.3 3.4 9.7 8.2 11.2.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.5-1.2-1.1-1.6-1.1-1.6-.9-.6.1-.6.1-.6 1 .1 1.6 1 1.6 1 .9 1.6 2.4 1.1 3 .9.1-.7.3-1.1.6-1.4-2.6-.3-5.2-1.3-5.2-5.7 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.6.1-3.2 0 0 1-.3 3.3 1.2a11.6 11.6 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.6.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.5-2.6 5.4-5.2 5.7.3.3.7.9.7 1.9v2.8c0 .3.2.7.8.6C20.6 22 24 17.6 24 12.3c0-6.6-5.4-12-12-12"></path>
+        </svg>
+    </a>
+    <div id="particles-js"></div>
+    <div class="container neon-border" id="pw-overlay">
+        <h1 class="neon-text">Passwort Generator</h1>
+        <div class="output-row">
+            <input id="password" type="text" readonly placeholder="Ihr Passwort..." class="neon-input" />
+            <button id="copyBtn" class="neon-btn">
+                <span class="copy-text">Kopieren</span>
+                <span class="copied-text">Kopiert!</span>
+            </button>
+        </div>
+        <form id="generatorForm" autocomplete="off">
+            <label class="neon-label">Länge: <span id="lengthVal">12</span></label>
+            <input id="length" type="range" min="8" max="32" value="12" />
+            <div class="options">
+                <label><input type="checkbox" id="lowercase" checked> Kleinbuchstaben</label>
+                <label><input type="checkbox" id="uppercase" checked> Großbuchstaben</label>
+                <label><input type="checkbox" id="numbers" checked> Zahlen</label>
+                <label><input type="checkbox" id="symbols"> Sonderzeichen</label>
+            </div>
+            <button type="submit" class="neon-btn generate-btn">Generieren</button>
+        </form>
+    </div>
+    <div class="footer" id="footer">
+        &copy; 2025 Thorsten Bylicki – Passwort Generator. All rights reserved.
+    </div>
+    <script>
+        // Logo-Upload
+        document.getElementById('logo-container').addEventListener('click', function() {
+            document.getElementById('logo-upload').click();
+        });
+        document.getElementById('logo-upload').addEventListener('change', function(e){
+            const file = e.target.files[0];
+            if(!file) return;
+            const reader = new FileReader();
+            reader.onload = function(evt){
+                document.getElementById('logo-img').src = evt.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+        // Dynamische Größensteuerung (passt Buttons mit an)
+        function setLogoSize(w, h){
+            const container = document.getElementById('logo-container');
+            container.style.width = w + "px";
+            container.style.height = h + "px";
+            let btnFont = Math.max(0.72, Math.min(1.04, w/120));
+            document.querySelectorAll('.logo-size-controls button').forEach(btn=>{
+                btn.style.fontSize = (btnFont) + "rem";
+                btn.style.padding = Math.max(2, Math.floor(w/50))+"px "+Math.max(8,Math.floor(w/7))+"px";
+            });
+        }
+        // Buttons-Handler
+        document.querySelectorAll('.logo-size-controls button').forEach(btn => {
+            btn.addEventListener('click', function(e){
+                let w = parseInt(this.getAttribute('data-w'),10);
+                let h = parseInt(this.getAttribute('data-h'),10);
+                setLogoSize(w,h);
+            });
+        });
+        // Initialisieren auf "Standard"
+        setLogoSize(100,100);
+    </script>
+    <script>
+    (function(){
+        function randomBetween(a,b){return Math.random()*(b-a)+a;}
+        window.neonParticles=function(containerId,config){
+            var canvas=document.createElement("canvas");
+            canvas.style.width="100%";
+            canvas.style.height="100%";
+            canvas.style.position="absolute";
+            canvas.style.top="0";
+            canvas.style.left="0";
+            canvas.style.pointerEvents="none";
+            var parent=document.getElementById(containerId);
+            parent.style.position="fixed";
+            parent.style.top="0";parent.style.left="0";
+            parent.style.width="100vw";parent.style.height="100vh";
+            parent.style.zIndex="0";
+            parent.appendChild(canvas);
+            var ctx=canvas.getContext("2d");
+            function resize(){
+                canvas.width=window.innerWidth;
+                canvas.height=window.innerHeight;
+            }
+            resize();window.addEventListener("resize",resize);
+
+            var colors=config.particles.color.value;
+            var linesColor=config.particles.line_linked.color;
+            var linesOpacity=config.particles.line_linked.opacity;
+            var linesWidth=config.particles.line_linked.width;
+            var maxDist=config.particles.line_linked.distance;
+            var speed=config.particles.move.speed;
+            var count=config.particles.number.value;
+            var size=config.particles.size.value;
+            var sizeRand=config.particles.size.random;
+            var opacity=config.particles.opacity.value;
+            var opacityRand=config.particles.opacity.random;
+
+            function collideRectCircle(rect, circle) {
+                var cx = Math.max(rect.x, Math.min(circle.x, rect.x + rect.w));
+                var cy = Math.max(rect.y, Math.min(circle.y, rect.y + rect.h));
+                var dx = circle.x - cx;
+                var dy = circle.y - cy;
+                return (dx * dx + dy * dy) < (circle.r * circle.r);
+            }
+            function collideCircleCircle(a, b) {
+                var dx = b.x - a.x;
+                var dy = b.y - a.y;
+                var dist = Math.sqrt(dx*dx + dy*dy);
+                if(dist === 0) return false;
+                if(dist < a.r + b.r) {
+                    var angle = Math.atan2(dy, dx);
+                    var u1 = rotate({x:a.vx,y:a.vy}, angle);
+                    var u2 = rotate({x:b.vx,y:b.vy}, angle);
+                    var v1 = {x:u2.x, y:u1.y};
+                    var v2 = {x:u1.x, y:u2.y};
+                    var vFinal1 = rotate(v1, -angle);
+                    var vFinal2 = rotate(v2, -angle);
+                    a.vx = vFinal1.x; a.vy = vFinal1.y;
+                    b.vx = vFinal2.x; b.vy = vFinal2.y;
+                    var overlap = a.r + b.r - dist + 0.3;
+                    var half = overlap / 2;
+                    a.x -= half * dx / dist;
+                    a.y -= half * dy / dist;
+                    b.x += half * dx / dist;
+                    b.y += half * dy / dist;
+                }
+            }
+            function rotate(velocity, angle) {
+                return {
+                    x: velocity.x * Math.cos(angle) - velocity.y * Math.sin(angle),
+                    y: velocity.x * Math.sin(angle) + velocity.y * Math.cos(angle)
+                };
+            }
+            function getObstacles() {
+                var obs = [];
+                var ovl = document.getElementById("pw-overlay");
+                if(ovl) {
+                    var br = ovl.getBoundingClientRect();
+                    obs.push({x: br.left, y: br.top, w: br.width, h: br.height});
+                }
+                var logo = document.getElementById("logo-container");
+                if(logo) {
+                    var br = logo.getBoundingClientRect();
+                    obs.push({x: br.left, y: br.top, w: br.width, h: br.height});
+                }
+                var panel = document.getElementById("logo-size-controls");
+                if(panel) {
+                    var br = panel.getBoundingClientRect();
+                    obs.push({x: br.left, y: br.top, w: br.width, h: br.height});
+                }
+                var gh = document.querySelector(".github-fix");
+                if(gh) {
+                    var br = gh.getBoundingClientRect();
+                    obs.push({x: br.left, y: br.top, w: br.width, h: br.height});
+                }
+                var footer = document.getElementById("footer");
+                if(footer) {
+                    var br = footer.getBoundingClientRect();
+                    obs.push({x: br.left, y: br.top, w: br.width, h: br.height});
+                }
+                return obs;
+            }
+
+            var particles=[];
+            function initParticles() {
+                particles = [];
+                for(var i=0;i<count;i++){
+                    var color=colors[Math.floor(Math.random()*colors.length)];
+                    var tries = 0, maxTries = 50, placed = false;
+                    var p;
+                    while(!placed && tries++ < maxTries) {
+                        p = {
+                            x: randomBetween(0, canvas.width),
+                            y: randomBetween(0, canvas.height),
+                            vx: randomBetween(-speed,speed),
+                            vy: randomBetween(-speed,speed),
+                            r: sizeRand ? randomBetween(size*0.6,size) : size,
+                            o: opacityRand ? randomBetween(opacity*0.5,opacity):opacity,
+                            color: color
+                        };
+                        var obstacles = getObstacles();
+                        var inObstacle = obstacles.some(function(obs){
+                            return collideRectCircle(obs, p);
+                        });
+                        if(!inObstacle) placed = true;
+                    }
+                    particles.push(p);
+                }
+            }
+            initParticles();
+            window.addEventListener("resize", function(){resize(); setTimeout(initParticles, 100);});
+
+            function draw(){
+                ctx.clearRect(0,0,canvas.width,canvas.height);
+                for(var i=0;i<particles.length;i++){
+                    var p=particles[i];
+                    ctx.beginPath();
+                    ctx.arc(p.x,p.y,p.r,0,2*Math.PI);
+                    ctx.globalAlpha=p.o;
+                    ctx.shadowColor=p.color;
+                    ctx.shadowBlur=22;
+                    ctx.fillStyle=p.color;
+                    ctx.fill();
+                }
+                ctx.globalAlpha=1;
+                for(var i=0;i<particles.length;i++){
+                    for(var j=i+1;j<particles.length;j++){
+                        var p1=particles[i],p2=particles[j];
+                        var dx=p1.x-p2.x,dy=p1.y-p2.y,dist=Math.sqrt(dx*dx+dy*dy);
+                        if(dist<maxDist){
+                            ctx.save();
+                            ctx.globalAlpha=linesOpacity*(1-dist/maxDist);
+                            ctx.strokeStyle=linesColor;
+                            ctx.lineWidth=linesWidth;
+                            ctx.beginPath();
+                            ctx.moveTo(p1.x,p1.y);ctx.lineTo(p2.x,p2.y);
+                            ctx.stroke();
+                            ctx.restore();
+                        }
+                    }
+                }
+            }
+            function update(){
+                var obstacles = getObstacles();
+                for(var i=0;i<particles.length;i++){
+                    var p=particles[i];
+                    p.x+=p.vx;p.y+=p.vy;
+                    if(p.x<0+p.r || p.x>canvas.width-p.r) p.vx*=-1;
+                    if(p.y<0+p.r || p.y>canvas.height-p.r) p.vy*=-1;
+                    for(var o=0; o<obstacles.length; ++o) {
+                        var obs = obstacles[o];
+                        if(collideRectCircle(obs, p)) {
+                            var cx = Math.max(obs.x, Math.min(p.x, obs.x + obs.w));
+                            var cy = Math.max(obs.y, Math.min(p.y, obs.y + obs.h));
+                            var dx = p.x - cx;
+                            var dy = p.y - cy;
+                            if(Math.abs(dx) > Math.abs(dy)) {
+                                p.vx = -p.vx;
+                                p.x += p.vx;
+                            } else {
+                                p.vy = -p.vy;
+                                p.y += p.vy;
+                            }
+                        }
+                    }
+                }
+                for(let i=0;i<particles.length;i++){
+                    for(let j=i+1;j<particles.length;j++){
+                        collideCircleCircle(particles[i],particles[j]);
+                    }
+                }
+            }
+            function animate(){
+                update();
+                draw();
+                requestAnimationFrame(animate);
+            }
+            animate();
+        };
+    })();
+    neonParticles("particles-js",{
+      "particles": {
+        "number": { "value": 55 },
+        "color": { "value": ["#14f1ff","#d414ff","#00ffb2","#ffff00"] },
+        "shape": { "type": "circle" },
+        "opacity": { "value": 0.6, "random": true },
+        "size": { "value": 8, "random": true },
+        "line_linked": {
+          "enable": true,
+          "distance": 170,
+          "color": "#14f1ff",
+          "opacity": 0.25,
+          "width": 2
+        },
+        "move": {
+          "enable": true,
+          "speed": 2.8,
+        }
+      }
+    });
+    </script>
+    <script>
+        // Passwort Generator Logik
+        const passwordInput = document.getElementById('password');
+        const lengthSlider = document.getElementById('length');
+        const lengthVal = document.getElementById('lengthVal');
+        const lowercase = document.getElementById('lowercase');
+        const uppercase = document.getElementById('uppercase');
+        const numbers = document.getElementById('numbers');
+        const symbols = document.getElementById('symbols');
+        const form = document.getElementById('generatorForm');
+        const copyBtn = document.getElementById('copyBtn');
+        const CHARS = {
+            lowercase: 'abcdefghijklmnopqrstuvwxyz',
+            uppercase: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+            numbers: '0123456789',
+            symbols: '!@#$%^&*()-_+=[]{}:;,.?/|~<>'
+        };
+        function generatePassword() {
+            let pool = '';
+            if(lowercase.checked) pool += CHARS.lowercase;
+            if(uppercase.checked) pool += CHARS.uppercase;
+            if(numbers.checked) pool += CHARS.numbers;
+            if(symbols.checked) pool += CHARS.symbols;
+            if(pool.length === 0) return '';
+            // Mindestens ein Zeichen je gewählter Kategorie
+            let password = '';
+            let categories = [];
+            if(lowercase.checked) categories.push(CHARS.lowercase);
+            if(uppercase.checked) categories.push(CHARS.uppercase);
+            if(numbers.checked) categories.push(CHARS.numbers);
+            if(symbols.checked) categories.push(CHARS.symbols);
+            for(let i=0;i<categories.length;i++){
+                password += categories[i][Math.floor(Math.random()*categories[i].length)];
+            }
+            for(let i=password.length;i<lengthSlider.value;i++){
+                password += pool[Math.floor(Math.random()*pool.length)];
+            }
+            // Shuffle
+            return password.split('').sort(()=>Math.random()-0.5).join('');
+        }
+        function updatePassword() {
+            const pw = generatePassword();
+            passwordInput.value = pw;
+        }
+        lengthSlider.oninput = function(){
+            lengthVal.textContent = lengthSlider.value;
+            updatePassword();
+        };
+        form.addEventListener('change', updatePassword);
+        form.addEventListener('submit', function(e){
+            e.preventDefault();
+            updatePassword();
+        });
+        copyBtn.addEventListener('click', function(){
+            if(!passwordInput.value) return;
+            navigator.clipboard.writeText(passwordInput.value);
+            copyBtn.classList.add('copied');
+            setTimeout(()=>copyBtn.classList.remove('copied'), 1500);
+        });
+        window.onload = updatePassword;
+    </script>
+</body>
+</html>
